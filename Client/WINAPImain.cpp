@@ -69,8 +69,11 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR cmd, int mode)
 	
 	while(GetMessage(&msg, 0, 0, 0))
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		if(!IsDialogMessage(GetAncestor(msg.hwnd, GA_ROOT), &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
 	}
 	
 	return 0;
@@ -367,12 +370,12 @@ HWND AddDialogBox(HWND hWnd,
 void AddDialogConnectControllers(HWND hWnd)
 {
 	::hDialogEditServer = CreateWindowExA(WS_EX_CLIENTEDGE, "EDIT", NULL, 
-		WS_CHILD | WS_VISIBLE | ES_LEFT | ES_AUTOHSCROLL,
+		WS_CHILD | WS_VISIBLE | ES_LEFT | ES_AUTOHSCROLL | WS_TABSTOP,
 		20, 30, 160, 20,
 		hWnd, (HMENU)IDC_EDITSERVERADDR, 
 		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE), NULL);
 	::hDialogEditNickname = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", NULL,
-		WS_CHILD | WS_VISIBLE | ES_LEFT | ES_AUTOHSCROLL,
+		WS_CHILD | WS_VISIBLE | ES_LEFT | ES_AUTOHSCROLL | WS_TABSTOP,
 		20, 90, 160, 20,
 		hWnd, (HMENU)IDC_EDITNICKNAME, 
 		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE), NULL);
