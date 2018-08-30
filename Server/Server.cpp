@@ -102,8 +102,8 @@ void Server::StartTCP()
 				}
 				else
 				{
-				//send a message to all clients
-					SendToAllTCP(copySet.fd_array[i]);
+				//check a string for the special characters "/*"
+					CheckMessage(copySet.fd_array[i]);
 				}
 			}
 		}
@@ -129,6 +129,29 @@ void Server::FillCopySet(fd_set& copySet)
 	FD_SET(listenSocket, &copySet);
 	for(const auto& it : validClients)
 		FD_SET(it.first, &copySet);
+}
+
+void Server::CheckMessage(const SOCKET& msgOwner) const
+{
+	//if the message is the system message(/*nclients)
+	
+	if(wcsstr((const wchar_t* ) bufferTCP, L"/*nclients") != NULL)
+	{
+		wchar_t numBuff[4];
+		//convert the number of connected clients to Unicode string
+		_itow(validClients.size(), numBuff, 10);
+		//add the number(unicode string) to system message string
+		wchar_t sysMsgBuff[20] = L"Clients count: ";
+		wcscat(sysMsgBuff, numBuff);
+		//send the system message to the owner
+		if(send(msgOwner, (char* ) sysMsgBuff, sizeof(sysMsgBuff), 0)
+			== SOCKET_ERROR)
+		{
+			std::cerr << "send sysmsg Error" << WSAGetLastError() << std::endl;
+		}
+	}
+	//if the message is not the system message
+	SendToAllTCP(msgOwner);
 }
 
 void Server::SendToAllTCP(const SOCKET& msgOwner) const

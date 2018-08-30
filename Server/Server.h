@@ -22,6 +22,7 @@ public:
 	
 private:
 	void FillCopySet(fd_set&);
+	void CheckMessage(const SOCKET&) const;
 	void SendToAllTCP(const SOCKET&) const;
 	void RemoveClient(SOCKET&);
 
