@@ -4,15 +4,21 @@
 
 #define IDR_CONNECT 1
 #define IDR_OPTIONS 2
-#define IDR_EXIT 3
+#define IDR_EXIT 	3
 
-#define IDC_EDITWRITE 4
-#define IDC_EDITSHOW 5
-#define IDC_EDITCLIENTS 6
-#define IDC_EDITSERVERADDR 7
-#define IDC_EDITNICKNAME 8
-#define IDC_BUTTONOK 9
-#define IDC_BUTTONCANCEL 10
+#define IDC_EDITWRITE 		4
+#define IDC_EDITSHOW 		5
+#define IDC_EDITCLIENTS 	6
+#define IDC_EDITSERVERADDR 	7
+#define IDC_EDITNICKNAME 	8
+#define IDC_BUTTONOK 		9
+#define IDC_BUTTONCANCEL 	10
+
+#define SMALL_ICON 			L"resources//ICON.ico"
+#define WELCOME_SOUND 		L"resources//welcome.wav"
+#define BACKGROUND_IMG		L"resources//BACKGROUND.bmp"
+#define DISCONNECTED_SOUND  L"resources//disconnected.wav"
+#define CONNECTED_SOUND 	L"resources//connected.wav"
 
 #define TIMER_ID 999
 
@@ -52,7 +58,8 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR cmd, int mode)
 	
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.cbClsExtra = 0;
-	wc.hIcon = (HICON)LoadImageW(NULL, L"ICON.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+	wc.hIcon = (HICON)LoadImageW(NULL, SMALL_ICON, IMAGE_ICON,
+								 0, 0, LR_LOADFROMFILE);
 	wc.hbrBackground = 0;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hInstance = hInst;
@@ -67,7 +74,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR cmd, int mode)
 	NULL, NULL, 0, NULL);
 	UpdateWindow(hWnd);
 	
-	while(GetMessage(&msg, 0, 0, 0))
+	while(GetMessageW(&msg, 0, 0, 0))
 	{
 		if(!IsDialogMessage(GetAncestor(msg.hwnd, GA_ROOT), &msg))
 		{
@@ -94,12 +101,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		case WM_CREATE:
 			//play welcome sound
-			PlaySound(L"welcome.wav", NULL, SND_ASYNC | SND_FILENAME);
+			PlaySound(WELCOME_SOUND,
+					  NULL,
+					  SND_ASYNC | SND_FILENAME);
 			//Set a timer to receive messages from server
 			SetTimer(hWnd, TIMER_ID, 700, NULL);
 			
-			hBitmap = (HBITMAP)LoadImageW(NULL, L"BACKGROUND.bmp",
-			IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+			hBitmap = (HBITMAP)LoadImageW(NULL, BACKGROUND_IMG,
+										IMAGE_BITMAP,
+										0, 0,
+										LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 				GetObject(hBitmap, sizeof(Bitmap), &Bitmap);
 				hDc = GetDC(hWnd);
 				hDcCompatible = CreateCompatibleDC(hDc);
@@ -208,7 +219,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 		case WM_DESTROY:
 			//play disconnected sound
-			PlaySound(L"disconnected.wav", NULL, SND_SYNC | SND_FILENAME);
+			PlaySound(DISCONNECTED_SOUND, NULL, SND_SYNC | SND_FILENAME);
 			
 			KillTimer(hWnd, TIMER_ID);
 			DeleteObject(hBitmap);
@@ -293,7 +304,7 @@ LRESULT CALLBACK DialogProcConnect(HWND hWnd,
 					if(mainClient.is_connected())
 					{
 						mainClient.StartThreadUDP();
-						PlaySound(L"connected.wav",
+						PlaySound(CONNECTED_SOUND,
 								  NULL,
 								  SND_ASYNC | SND_FILENAME);
 						SendMessageW(hEditDisplay,
