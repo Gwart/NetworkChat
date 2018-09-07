@@ -34,8 +34,6 @@ ATOM RegisterDialogBox(HWND, WNDPROC, const wchar_t*);
 void AddMenuBar(HWND);
 void AddMainControllers(HWND);
 
-void TrimStr(char*);
-
 HWND hDialogConnect;
 HWND hDialogOptions;
 
@@ -294,7 +292,7 @@ LRESULT CALLBACK DialogProcConnect(HWND hWnd,
 			switch(LOWORD(wParam))
 			{
 				case IDC_BUTTONOK:
-				//Client: get an addr and a Nickname to connect
+				//Client: get an addr and a Nickname for connection 
 					char addr[30];
 					wchar_t nick[30];
 					
@@ -314,6 +312,8 @@ LRESULT CALLBACK DialogProcConnect(HWND hWnd,
 								 0,
 								 (LPARAM)L"Connected\r\n");
 					}
+					
+					
 					
 					DestroyWindow(hWnd);
 					break;
@@ -473,58 +473,5 @@ void AddMainControllers(HWND hWnd)
 				hWnd, (HMENU)IDC_EDITCLIENTS, 
 				(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE), NULL);*/
 }
-
-void TrimStr(char* s)
-{
-	if(*s == '\0')
-		return;
-	
-	char* oldStartStr = s;
-	char* notSpace = s;
-	char* newStartStr = NULL;
-	
-	//find first(not a space) symbol
-	while(*s)
-	{
-		if(*s == ' ')
-		{
-			newStartStr = s;
-		}
-		else
-		{
-			newStartStr = s;
-			notSpace = s;
-			break;
-		}
-		s++;
-	}
-	
-	//find last(not a space) symbol
-	while(*s)
-    {
-        if(*s != ' ')
-            notSpace = s;
-        s++;
-    }
-	
-	if(*notSpace == ' ')//string is only space symbols
-	{
-		*notSpace = '\0';
-	}
-	else if(newStartStr == NULL) //there is no spaces on the left side
-	{
-		*(notSpace + 1) = '\0';
-	}
-	else //worst case scenario, example: "  aaa   "
-	{
-		*(notSpace + 1) = '\0';
-		
-		for(int i = 0; i < (newStartStr - oldStartStr) + 2; ++i)
-		{
-			*(oldStartStr + i) = *(newStartStr + i);
-		}
-	}
-}
-
 
 
