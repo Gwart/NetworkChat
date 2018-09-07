@@ -34,6 +34,8 @@ ATOM RegisterDialogBox(HWND, WNDPROC, const wchar_t*);
 void AddMenuBar(HWND);
 void AddMainControllers(HWND);
 
+void TrimStr(char*);
+
 HWND hDialogConnect;
 HWND hDialogOptions;
 
@@ -299,6 +301,8 @@ LRESULT CALLBACK DialogProcConnect(HWND hWnd,
 					GetWindowTextA(hDialogEditServer, addr, sizeof(addr));
 					GetWindowTextW(hDialogEditNickname, nick, sizeof(nick));
 					
+					TrimStr(addr);
+					
 					mainClient.Connect(addr, nick);
 					
 					if(mainClient.is_connected())
@@ -472,6 +476,58 @@ void AddMainControllers(HWND hWnd)
 				0, 0, 0, 0,
 				hWnd, (HMENU)IDC_EDITCLIENTS, 
 				(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE), NULL);*/
+}
+
+void TrimStr(char* s)
+{
+	if(*s == '\0')
+		return;
+	
+	char* oldStartStr = s;
+	char* notSpace = s;
+	char* newStartStr = NULL;
+	
+	//find first(not a space) symbol
+	while(*s)
+	{
+		if(*s == ' ')
+		{
+			newStartStr = s;
+		}
+		else
+		{
+			newStartStr = s;
+			notSpace = s;
+			break;
+		}
+		s++;
+	}
+	
+	//find last(not a space) symbol
+	while(*s)
+    {
+        if(*s != ' ')
+            notSpace = s;
+        s++;
+    }
+	
+	if(*notSpace == ' ')//string is only space symbols
+	{
+		*notSpace = '\0';
+	}
+	else if(newStartStr == NULL) //there is no spaces on the left side
+	{
+		*(notSpace + 1) = '\0';
+	}
+	else //worst case scenario, example: "  aaa   "
+	{
+		*(notSpace + 1) = '\0';
+		
+		for(int i = 0; i < (notSpace - newStartStr) + 2; ++i)
+		{
+			*(oldStartStr + i) = *(newStartStr + i);
+		}
+	}
 }
 
 
