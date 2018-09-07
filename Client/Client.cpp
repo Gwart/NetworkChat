@@ -89,7 +89,7 @@ int Client::Connect(const char* addr, const wchar_t* nick)
 	if(getaddrinfo(addr, DEFAULT_PORT, &hints, &result)) //1
 	{
 		MessageBoxW(NULL, L"getaddrinfo Error", L"ERROR", MB_OK);
-		WSACleanup();	
+		Disconnect();
 		return -1;
 	}
 	//Think about a timer here, because if an address does exist,
@@ -98,14 +98,14 @@ int Client::Connect(const char* addr, const wchar_t* nick)
 	if(connect(sockTCP,result->ai_addr, (int)result->ai_addrlen))
 	{
 		MessageBoxW(NULL, L"connect Error", L"ERROR", MB_OK);
-		WSACleanup();
+		Disconnect();
 		return -1;
 	}
 	
 	if(connect(sockUDP, (sockaddr* ) &sendAddrUDP, sizeof(sendAddrUDP)))
 	{
 		MessageBoxW(NULL, L"connect Error", L"ERROR", MB_OK);
-		WSACleanup();
+		Disconnect();
 		return -1;
 	}
 	
@@ -123,7 +123,6 @@ int Client::Connect(const char* addr, const wchar_t* nick)
 	if (sockTCP == INVALID_SOCKET) 
 	{
         MessageBoxW(NULL, L"Unable to connect to the server", L"ERROR", MB_OK);
-        WSACleanup();
         return -1;
     }
 	
