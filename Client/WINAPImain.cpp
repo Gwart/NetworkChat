@@ -41,7 +41,6 @@ HWND hDialogOptions;
 
 HWND hEditWrite;
 HWND hEditDisplay;
-//HWND hEditShowClients;
 
 HWND hDialogEditNickname;
 HWND hDialogEditServer;
@@ -72,7 +71,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR cmd, int mode)
 	
 	hWnd = CreateWindowW(L"GeneralWindow", L"Network chat", 
 	WS_CLIPCHILDREN | WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-	CW_USEDEFAULT, CW_USEDEFAULT, 500, 600, 
+	CW_USEDEFAULT, CW_USEDEFAULT, 400, 500, 
 	NULL, NULL, 0, NULL);
 	UpdateWindow(hWnd);
 	
@@ -107,7 +106,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					  NULL,
 					  SND_ASYNC | SND_FILENAME);
 			//Set a timer to receive messages from server
-			SetTimer(hWnd, TIMER_ID, 700, NULL);
+			SetTimer(hWnd, TIMER_ID, 300, NULL);
 			
 			hBitmap = (HBITMAP)LoadImageW(NULL, BACKGROUND_IMG,
 										IMAGE_BITMAP,
@@ -163,7 +162,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			UpdateWindow(hEditWrite);
 			UpdateWindow(hEditDisplay);
-			//UpdateWindow(hEditShowClients);
 			break;
 		
 		case WM_SIZE:
@@ -172,10 +170,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			MoveWindow(hEditWrite, 0, ywin - ywin/8, 
 						xwin, ywin/8, TRUE);
-			MoveWindow(hEditDisplay, 0, ywin - 3 * (ywin/8),
-						xwin, (ywin/5), TRUE);
-			/*MoveWindow(hEditShowClients, 0, 5,
-						xwin, (ywin/2), TRUE);*/
+			MoveWindow(hEditDisplay, 0, 0,
+						xwin, ywin - (ywin/5), TRUE);
 			break;
 		
 		case WM_COMMAND:
@@ -316,8 +312,6 @@ LRESULT CALLBACK DialogProcConnect(HWND hWnd,
 								 0,
 								 (LPARAM)L"Connected\r\n");
 					}
-					
-					
 					
 					DestroyWindow(hWnd);
 					break;
@@ -470,12 +464,6 @@ void AddMainControllers(HWND hWnd)
 				0, 0, 0, 0,
 				hWnd, (HMENU)IDC_EDITSHOW, 
 				(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE), NULL);
-	/*::hEditShowClients = CreateWindowW(L"EDIT", NULL, 
-				WS_CHILD | WS_VISIBLE | WS_VSCROLL | 
-				ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
-				0, 0, 0, 0,
-				hWnd, (HMENU)IDC_EDITCLIENTS, 
-				(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE), NULL);*/
 }
 
 void TrimStr(char* s)
