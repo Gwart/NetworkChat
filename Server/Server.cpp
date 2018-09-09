@@ -79,7 +79,7 @@ void Server::StartTCP()
 				
 				SetClient(client, (sockaddr_in)clientInfoUDP);
 				
-				std::cerr << "\nNew client connected. There is " 
+				std::cout << "\nNew client connected. There is " 
 					<< validClients.size() << " on the server.\n";
 			}
 			else 

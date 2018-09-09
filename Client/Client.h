@@ -54,7 +54,7 @@ class Client
 		struct addrinfo hints;
 		
 		wchar_t nickname[NICKNAME_BUFFER];
-		char recvbuf[TEXT_BUFFER];
+		wchar_t recvbuf[TEXT_BUFFER];
 		bool connection;
 		
 };

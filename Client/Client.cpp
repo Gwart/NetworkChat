@@ -71,7 +71,6 @@ int Client::Connect(const char* addr, const wchar_t* nick)
 	nickname[wcslen(nick)] = L':';
 	nickname[wcslen(nick) + 1] = L'\0';
 	
-	
 	memset(&sendAddrUDP, 0, sizeof(sendAddrUDP));
 	
 	int iPort;
@@ -143,7 +142,7 @@ int Client::SendMessageTCP(const wchar_t* msg)
 	{
 		return -1;
 	}
-	wchar_t sendbuf[TEXT_BUFFER];
+	wchar_t sendbuf[TEXT_BUFFER] = {0};
 	wcscat(sendbuf, nickname);
 	wcscat(sendbuf, msg);
 	
