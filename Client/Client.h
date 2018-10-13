@@ -30,7 +30,6 @@ class Client
 		const wchar_t* const RecvMessageTCP();
 		
 		int InitUDP();
-		void StartThreadUDP();
 		const struct sockaddr_in& GetAddrUDP() const;
 		const SOCKET& GetSocketUDP() const;
 		
@@ -39,9 +38,10 @@ class Client
 		
 		
 	private:
+		void StartThreadsUDP();
 		static unsigned __stdcall SendVoiceUDP(void*);
 		static unsigned __stdcall RecvVoiceUDP(void*);
-	
+		
 		WSADATA wsaDataUDP;
 		SOCKET sockUDP;
 		struct sockaddr_in sendAddrUDP;

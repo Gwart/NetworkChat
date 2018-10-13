@@ -125,6 +125,8 @@ int Client::Connect(const char* addr, const wchar_t* nick)
         return -1;
     }
 	
+	StartThreadsUDP();
+	
 	connection = true;
 	
 	return 0;
@@ -193,7 +195,7 @@ int Client::InitUDP()
 	return 0;
 }
 
-void Client::StartThreadUDP()
+void Client::StartThreadsUDP()
 {
 	sendThread = (HANDLE)_beginthreadex(NULL, 
 									   0, 
@@ -221,7 +223,10 @@ const SOCKET& Client::GetSocketUDP() const
 }
 
 void Client::Disconnect()
-{		
+{	
+	result = NULL;
+	connection = false;
+
 	shutdown(sockTCP, SD_BOTH);
 	shutdown(sockUDP, SD_BOTH);
 	closesocket(sockTCP);
@@ -229,9 +234,12 @@ void Client::Disconnect()
 	
 	sockTCP = INVALID_SOCKET;
 	sockUDP = INVALID_SOCKET;
-	result = NULL;
-	connection = false;
-	Sleep(1000);
+	
+	HANDLE arrThread[2] = {sendThread, recvThread};
+	//Wait until threads are going out of the cycles
+	WaitForMultipleObjects(2, arrThread, TRUE, INFINITE);
+	CloseHandle(sendThread);
+	CloseHandle(recvThread);
 }
 
 unsigned __stdcall Client::SendVoiceUDP(void* object)
