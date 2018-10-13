@@ -303,7 +303,6 @@ LRESULT CALLBACK DialogProcConnect(HWND hWnd,
 					
 					if(mainClient.is_connected())
 					{
-						mainClient.StartThreadUDP();
 						PlaySound(CONNECTED_SOUND,
 								  NULL,
 								  SND_ASYNC | SND_FILENAME);
